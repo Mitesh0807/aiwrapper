@@ -6,7 +6,7 @@ import SearchBar from "../components/SearchBar";
 function MainLayout() {
   return (
     <>
-      <div style={{ display: "flex" }}>
+      {/* <div style={{ display: "flex" }}>
         <div
           style={{
             marginRight: "20px",
@@ -22,7 +22,7 @@ function MainLayout() {
           </main>
           <SearchBar />
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { sidebarMenuItems } from "../enums/sidebar";
+
 function Sidebar() {
   const [sidebarItems, setSidebarItems] = useState(
     (Object.keys(sidebarMenuItems) as Array<keyof typeof sidebarMenuItems>).map(
@@ -8,10 +9,6 @@ function Sidebar() {
       }
     )
   );
-
-  // const consoleCheck = (val) => {
-  //   console.log(val, "ssa");
-  // };
 
   return (
     <>
@@ -31,7 +28,7 @@ function Sidebar() {
           viewBox="0 0 16 16"
         >
           <path
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
           />
         </svg>
@@ -44,7 +41,6 @@ function Sidebar() {
         <div className="px-6">
           <a
             className="flex-none text-xl font-semibold dark:text-white"
-            href="#"
             aria-label="Brand"
           >
             Brand
@@ -55,15 +51,12 @@ function Sidebar() {
           data-hs-accordion-always-open
         >
           {sidebarItems.map((value) => (
-            <ul className="space-y-1.5 py-1">
+            <ul className="space-y-1.5 py-1" key={value}>
               <li>
                 <a
-                  className="flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-slate-700 rounded-lg  dark:bg-gray-900 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   href="#"
                 >
-                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                  <polyline points="9 22 9 12 15 12 15 22" />
-
                   {sidebarMenuItems[value]}
                 </a>
               </li>
