@@ -8,9 +8,6 @@ const DashboardLayout = () => {
   const { isAuthenticated } = useAuth0();
 
   return isAuthenticated ? (
-    // <main>
-    //   <Outlet />
-    // </main>
     <div style={{ display: "flex" }}>
       <div
         style={{

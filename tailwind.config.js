@@ -5,7 +5,6 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
     "node_modules/preline/dist/*.js",
   ],
-  plugins: [require("preline/plugin")],
   theme: {
     extend: {},
   },

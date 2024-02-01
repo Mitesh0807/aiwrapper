@@ -1,14 +1,7 @@
-import { useAuth0 } from "@auth0/auth0-react";
-
 const Dashboard = () => {
-  const { user, logout } = useAuth0();
-
-  console.log(user);
-
   return (
-    <>
+    <div className="mt-5">
       <h1>
-        {" "}
         Vada pav is a popular street food in India. It consists of a batata vada
         (a potato patty) sandwiched between two slices of pav ( a bread roll).
         The vada is made from boiled potatoes that are mashed and mixed with
@@ -87,7 +80,7 @@ const Dashboard = () => {
         vada on each half of the pav. 3. Add some green chutney and tamarind
         chutney to taste. 4. Serve immediately.
       </h1>
-    </>
+    </div>
   );
 };
 
