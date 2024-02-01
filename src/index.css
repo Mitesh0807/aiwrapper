@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+ /* temporary background color for testing */
+body{
+    background-color: #475569;
+}

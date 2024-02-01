@@ -1,16 +1,17 @@
 import { useState } from "react";
 
-function SearchBar() {
+function SearchBar({ onSearch }) {
   const [inputValue, setInputValue] = useState("");
 
   const handleSearch = () => {
-    console.log(inputValue);
+    if (inputValue === "") return;
+    onSearch(inputValue);
   };
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0">
-        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 ">
+      <div className="sticky bottom-0 left-0 right-0 w-full">
+        <div className="w-[80rem] mx-auto px-4 sm:px-6 lg:px-8 py-4 ">
           <div className="text-center">
             <p className="mt-3 text-gray-600 dark:text-gray-400"></p>
 
@@ -22,7 +23,7 @@ function SearchBar() {
                       <span className="sr-only">Search article</span>
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       name="hs-search-article-1"
                       id="hs-search-article-1"
                       className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
@@ -33,7 +34,6 @@ function SearchBar() {
                   <div className="flex-[0_0_auto]">
                     <a
                       className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                      href="#"
                       onClick={handleSearch}
                     >
                       <svg
