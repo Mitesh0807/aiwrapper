@@ -1,13 +1,12 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function Header() {
-  const { user, logout } = useAuth0();
+  const { logout } = useAuth0();
 
   return (
     <>
-      <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm">
+      <header className="sticky top-5 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm">
         <nav
           className=" relative max-w-[85rem] w-full bg-white border border-gray-200 rounded-[36px] mx-2 py-3 px-4 md:flex md:items-center md:justify-between md:py-0 md:px-6 lg:px-8 xl:mx-auto dark:bg-gray-800 dark:border-gray-700"
           aria-label="Global"
