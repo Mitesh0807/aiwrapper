@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function SearchBar({ onSearch }) {
+function SearchBar({ onSearch }: { onSearch: (search: string) => void }) {
   const [inputValue, setInputValue] = useState("");
 
   const handleSearch = () => {
@@ -10,7 +10,7 @@ function SearchBar({ onSearch }) {
 
   return (
     <>
-      <div className="sticky bottom-0 left-0 right-0 w-full">
+      <div className="sticky bottom-0 left-0 right-0 w-full bottom-0">
         <div className="w-[80rem] mx-auto px-4 sm:px-6 lg:px-8 py-4 ">
           <div className="text-center">
             <p className="mt-3 text-gray-600 dark:text-gray-400"></p>
@@ -26,7 +26,7 @@ function SearchBar({ onSearch }) {
                       type="text"
                       name="hs-search-article-1"
                       id="hs-search-article-1"
-                      className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+                      className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-100 dark:focus:ring-gray-600"
                       placeholder="Search article"
                       onChange={(e) => setInputValue(e.target.value)}
                     />
