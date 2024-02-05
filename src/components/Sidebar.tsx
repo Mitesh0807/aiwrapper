@@ -2,7 +2,7 @@ import { useState } from "react";
 import { sidebarMenuItems } from "../enums/sidebar";
 
 function Sidebar() {
-  const [sidebarItems, setSidebarItems] = useState(
+  const [sidebarItems] = useState(
     (Object.keys(sidebarMenuItems) as Array<keyof typeof sidebarMenuItems>).map(
       (key) => {
         return key;
