@@ -76,7 +76,7 @@ const DashboardLayout = () => {
         style={{ flexGrow: 1 }}
       >
         <Header />
-        <main className="flex min-h-screen"></main>
+        <main className="flex"></main>
         <Outlet context={[data, responseData]} />
         <SearchBar onSearch={handleSearch} />
       </div>
