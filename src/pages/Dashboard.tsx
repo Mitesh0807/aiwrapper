@@ -1,18 +1,16 @@
-import { useOutletContext } from "react-router-dom";
+// import { useOutletContext } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import ChatInput from "../components/ChatInput";
 import PromptReplyCard from "../components/PromptReplyCard";
-
-interface ResponseItem {
-  prompt: string;
-  response: {
-    generated_text: string;
-  };
-}
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const Dashboard = () => {
-  const [data] = useOutletContext<ResponseItem[]>();
-  const dataArray = Object.values(data);
+  const responseData = useSelector(
+    (state: RootState) => state?.data?.responseData
+  );
+
+  const dataArray = Object.values(responseData);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -37,7 +35,7 @@ const Dashboard = () => {
           paddingRight: "20px",
         }}
       >
-        {dataArray.map((item: ResponseItem, index: number) => (
+        {dataArray.map((item, index) => (
           <div key={index}>
             <ChatInput userInput={item.prompt} />
             {item.response && <PromptReplyCard response={item.response} />}

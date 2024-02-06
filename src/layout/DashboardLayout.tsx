@@ -1,39 +1,21 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { Navigate, Outlet } from "react-router-dom";
+// Component Imports
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import SearchBar from "../components/SearchBar";
-import { useState } from "react";
-import axios from "axios";
 
-interface DataItem {
-  prompt: string;
-  response: string;
-}
+// Library Imports
+import { useAuth0 } from "@auth0/auth0-react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchResponse } from "../store/slices/dataSlice";
+
 const DashboardLayout = () => {
   const { isAuthenticated } = useAuth0();
 
-  const [data, setData] = useState<DataItem[]>([]);
-  const [responseData, setResponseData] = useState<string[]>([""]);
+  const dispatch = useDispatch();
 
   const handleSearch = (search: string) => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post("http://localhost:3500/generate", {
-          search: search,
-        });
-        setResponseData((prevData) => [...prevData, response.data]);
-
-        setData((prevData) => [
-          ...prevData,
-          { prompt: search, response: response.data },
-        ]);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
+    dispatch(fetchResponse(search));
   };
 
   return isAuthenticated ? (
@@ -52,7 +34,7 @@ const DashboardLayout = () => {
       >
         <Header />
         <main className="flex"></main>
-        <Outlet context={[data, responseData]} />
+        <Outlet />
         <div className="fixed bottom-0">
           <SearchBar onSearch={handleSearch} />
         </div>

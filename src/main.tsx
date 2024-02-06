@@ -3,6 +3,8 @@ import App from "./App.tsx";
 import "./index.css";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./store/store.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -13,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         redirect_uri: window.location.origin,
       }}
     >
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </Auth0Provider>
   </BrowserRouter>
 );
