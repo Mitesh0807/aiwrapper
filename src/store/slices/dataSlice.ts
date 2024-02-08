@@ -21,6 +21,22 @@ export const fetchResponse = createAsyncThunk<ResponseItem, string>(
   }
 );
 
+export const getUserId = createAsyncThunk<ResponseItem, string>(
+  'getUserId',
+  async (payload:string) => {
+    console.log(payload);
+  
+    try {
+      const response = await api.post("/user/add",payload);
+      console.log(response.data);
+      return response.data.response._id;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  }
+);
+
 const dataSlice = createSlice({
   name: "data",
   initialState: {
@@ -31,6 +47,9 @@ const dataSlice = createSlice({
     builder.addCase(fetchResponse.fulfilled, (state, action) => {
       state.responseData.push(action.payload);
     });
+    builder.addCase(getUserId.fulfilled,(_,action)=>{
+      localStorage.setItem("userId",action.payload)
+    })
   }
 });
 

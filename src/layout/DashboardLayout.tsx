@@ -7,16 +7,23 @@ import SearchBar from "../components/SearchBar";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { fetchResponse } from "../store/slices/dataSlice";
+import { fetchResponse, getUserId } from "../store/slices/dataSlice";
+import { useEffect } from "react";
 
 const DashboardLayout = () => {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, user } = useAuth0();
 
   const dispatch = useDispatch();
 
   const handleSearch = (search: string) => {
     dispatch(fetchResponse(search));
   };
+
+  useEffect(() => {
+    if (user !== undefined) {
+      dispatch(getUserId(user));
+    }
+  }, []);
 
   return isAuthenticated ? (
     <div style={{ display: "flex" }}>
