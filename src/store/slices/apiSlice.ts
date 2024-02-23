@@ -12,7 +12,6 @@ interface ApiData {
 
 const userId = localStorage.getItem('userId');
 
-
 export const getAllApiKeys = createAsyncThunk<string, ApiData>('getAllApiKeys', async (payload) => {
     console.log(payload);
     try {
@@ -71,10 +70,8 @@ export const findApiKeyById = createAsyncThunk<string, ApiData>('updateApiKey', 
 export const updateApiKey = createAsyncThunk<string, ApiData>('updateApiKey', async (payload) => {
     console.log(payload);
     try {
-
-        return { msg: "ok" }
-        // const response = await api.post("", payload)
-        // console.log(response);
+        const response = await api.post("/user/editAPI", payload)
+        console.log(response);
         // return response.data
     } catch (error) {
         console.log(error);

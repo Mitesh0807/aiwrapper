@@ -20,7 +20,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
 import { useDispatch } from "react-redux";
-import { addApiKey } from "@/store/slices/apiSlice";
+import { addApiKey, updateApiKey } from "@/store/slices/apiSlice";
 
 enum ApiType {
   BARD = "Bard",
@@ -52,6 +52,7 @@ export function ApiForm({ formData }) {
     console.log(data);
     if (formData) {
       //Edit case
+      dispatch(updateApiKey(data));
     } else {
       //add case
       dispatch(addApiKey(data));
