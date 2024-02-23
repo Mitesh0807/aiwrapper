@@ -5,6 +5,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store.tsx";
+import { NextUIProvider } from "@nextui-org/react";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -15,9 +16,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         redirect_uri: window.location.origin,
       }}
     >
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <NextUIProvider>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </NextUIProvider>
     </Auth0Provider>
   </BrowserRouter>
 );

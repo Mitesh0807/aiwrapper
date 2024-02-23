@@ -2,7 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
- /* temporary background color for testing */
-body{
-    background-color: #475569;
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
 }
