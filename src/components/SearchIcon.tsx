@@ -4,6 +4,11 @@ export const SearchIcon = ({
   width,
   height,
   ...props
+}: {
+  size: number;
+  strokeWidth: number;
+  width?: number;
+  height?: number;
 }) => (
   <svg
     aria-hidden="true"

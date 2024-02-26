@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Sidebar } from "./sidebar.styles";
 import { HomeIcon } from "./icons/sidebar/home-icon";
 import { PaymentsIcon } from "./icons/sidebar/payments-icon";
@@ -13,14 +12,11 @@ import { CompaniesDropdown } from "./Companies-Dropdown";
 import { SidebarItem } from "./sidebar-item";
 
 export const SidebarWrapper = () => {
-  const pathname = "/";
-  const { collapsed, setCollapsed } = useState(true);
-
   return (
     <aside className="h-screen z-[202] sticky top-0">
       <div
         className={Sidebar({
-          collapsed: collapsed,
+          // collapsed: collapsed,
         })}
       >
         <div className={Sidebar.Header()}>

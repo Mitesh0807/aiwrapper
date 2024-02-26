@@ -25,7 +25,7 @@ export default function DeleteModal({ render, func, onConfirm }) {
                 </p>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="danger" variant="flat" onPress={onClose}>
                   Close
                 </Button>
                 <Button color="primary" onClick={onConfirm}>

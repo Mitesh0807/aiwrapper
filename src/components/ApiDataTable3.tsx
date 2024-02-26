@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -25,11 +25,18 @@ import {
 import { PlusIcon } from "./icons/PlusIcon";
 import { ChevronDownIcon } from "./icons/ChevronDownIcon";
 import { SearchIcon } from "./icons/searchicon";
-import { columns, users, statusOptions } from "./data";
+import { columns, statusOptions } from "./data";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
 import DeleteModal from "./DeleteModal";
 import ApiModal from "./ApiModal";
+import {
+  deleteApiKey,
+  deleteSelectedApiKey,
+  getAllApiKeys,
+} from "../store/slices/apiSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../store/store";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   active: "success",
@@ -37,11 +44,37 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   vacation: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+const INITIAL_VISIBLE_COLUMNS = [
+  "apiName",
+  "apiKey",
+  "apiPurpose",
+  "apiType",
+  "actions",
+];
 
-type User = (typeof users)[0];
+type User = (typeof User)[0];
+
+interface RootState {
+  api: {
+    allApiData: {
+      _id: string;
+      apiType: string;
+      apiName: string;
+      apiKey: string;
+      apiPurpose?: string;
+    }[];
+  };
+}
 
 export default function ApiDataTable3() {
+  const dispatch: AppDispatch = useDispatch();
+
+  const users = useSelector((state: RootState) => state?.api?.allApiData);
+
+  useEffect(() => {
+    dispatch(getAllApiKeys());
+  }, [dispatch]);
+
   const pagesLimit = [
     {
       label: "5",
@@ -64,6 +97,17 @@ export default function ApiDataTable3() {
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
     new Set([])
   );
+
+  let idsForDeleteApi: string[];
+
+  if (selectedKeys !== "all") {
+    idsForDeleteApi = Array.from(selectedKeys).map(String);
+  } else {
+    idsForDeleteApi = users.map((api) => api._id);
+  }
+
+  console.log(idsForDeleteApi);
+
   const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
@@ -77,17 +121,39 @@ export default function ApiDataTable3() {
   const [page, setPage] = React.useState(1);
   const [value, setValue] = React.useState<string>("5");
   const [deleteId, setDeleteId] = React.useState<string>("");
-  console.log(value);
+  const [apiFormData, setApiFormData] = React.useState<string>("");
+  const [isEdit, setIsEdit] = React.useState<boolean>(false);
 
-  const handleDelete = (email: string) => {
-    console.log(email);
-    setDeleteId(email);
+  const handleEdit = (apiData: string) => {
+    setOpen(true);
+    setIsEdit(true);
+    setApiFormData(apiData);
+  };
+
+  const handleDelete = (id: string) => {
+    console.log(id);
+    setDeleteId(id);
     setOpenModal(true);
   };
 
-  const onDeleteConfirm = (email) => {
-    console.log(email);
-    setOpenModal(false);
+  const onDeleteConfirm = (id: string) => {
+    console.log(id);
+    dispatch(deleteApiKey(id))
+      .unwrap()
+      .then(() => {
+        console.log("run");
+        dispatch(getAllApiKeys());
+        setOpenModal(false);
+      })
+      .catch((err) => console.log("err", err));
+  };
+
+  const handleDeleteSelectedApi = () => {
+    dispatch(deleteSelectedApiKey(idsForDeleteApi))
+      .unwrap()
+      .then(() => {
+        dispatch(getAllApiKeys());
+      });
   };
 
   const hasSearchFilter = Boolean(filterValue);
@@ -105,7 +171,7 @@ export default function ApiDataTable3() {
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase())
+        user.apiName.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     if (
@@ -113,7 +179,7 @@ export default function ApiDataTable3() {
       Array.from(statusFilter).length !== statusOptions.length
     ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status)
+        Array.from(statusFilter).includes(user.apiType)
       );
     }
 
@@ -153,12 +219,12 @@ export default function ApiDataTable3() {
             {user.email}
           </User>
         );
-      case "role":
+      case "apiType":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">{cellValue}</p>
             <p className="text-bold text-tiny capitalize text-default-400">
-              {user.team}
+              {user.apiType}
             </p>
           </div>
         );
@@ -180,6 +246,7 @@ export default function ApiDataTable3() {
               <Button
                 variant="light"
                 isIconOnly
+                onClick={() => handleEdit(user)}
                 className="text-lg text-primary cursor-pointer active:opacity-50"
               >
                 <EditIcon />
@@ -189,7 +256,7 @@ export default function ApiDataTable3() {
               <Button
                 variant="light"
                 isIconOnly
-                onClick={() => handleDelete(user.email)}
+                onClick={() => handleDelete(user._id)}
                 className="text-lg text-danger cursor-pointer active:opacity-50"
               >
                 <DeleteIcon />
@@ -238,6 +305,7 @@ export default function ApiDataTable3() {
 
   const showForm = () => {
     setOpen(true);
+    setIsEdit(false);
   };
 
   const topContent = React.useMemo(() => {
@@ -247,7 +315,7 @@ export default function ApiDataTable3() {
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
-            placeholder="Search by name..."
+            placeholder="Search by api name...."
             startContent={<SearchIcon />}
             value={filterValue}
             onClear={() => onClear()}
@@ -349,10 +417,25 @@ export default function ApiDataTable3() {
   const bottomContent = React.useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
+        <span className="flex items-center gap-1 w-[30%] text-medium text-default-400">
           {selectedKeys === "all"
             ? "All items selected"
             : `${selectedKeys.size} of ${filteredItems.length} selected`}
+          <Tooltip color="danger" content="Delete Selected Api">
+            <Button
+              // isDisabled={selectedKeys?.size > 1}
+              isDisabled={true}
+              variant="light"
+              isIconOnly
+              onClick={() => {
+                (selectedKeys?.size > 1 || selectedKeys === "all") &&
+                  handleDeleteSelectedApi();
+              }}
+              className=" text-lg text-danger cursor-pointer active:opacity-50"
+            >
+              <DeleteIcon />
+            </Button>
+          </Tooltip>
         </span>
         <Pagination
           isCompact
@@ -415,9 +498,9 @@ export default function ApiDataTable3() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No users found"} items={sortedItems}>
+        <TableBody emptyContent={"No Api keys found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item._id}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
@@ -425,7 +508,12 @@ export default function ApiDataTable3() {
           )}
         </TableBody>
       </Table>
-      <ApiModal open={isOpen} setOpen={setOpen} />
+      <ApiModal
+        open={isOpen}
+        setOpen={setOpen}
+        formData={apiFormData}
+        isEdit={isEdit}
+      />
       <DeleteModal
         render={openModal}
         func={setOpenModal}
