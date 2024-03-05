@@ -10,7 +10,8 @@ import { SidebarWrapper } from "../components/Sidebar";
 import NavBar from "../components/NavBar";
 import PromptCard from "../components/PromptCard";
 import ResponseCard from "../components/ResponseCard";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import React from "react";
 
 const DashboardLayout = () => {
   useEffect(() => {
@@ -23,23 +24,49 @@ const DashboardLayout = () => {
     (state: RootState) => state?.data?.responseData
   );
 
-  console.log(responseData);
-
   const { isAuthenticated, user } = useAuth0();
 
   const [userPrompt, setUserPrompt] = useState("");
+
   const [aiResponse, setAiResponse] = useState("");
+
+  const [isError, setIsError] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleSearch = (search: string) => {
     setUserPrompt(search);
+    setIsLoading(true);
+    setIsError(false);
     dispatch(fetchResponse(search))
       .unwrap()
       .then((data) => {
+        setIsLoading(false);
         setAiResponse(data?.response?.generated_text);
+        setUserPrompt("");
+      })
+      .catch((err) => {
+        setIsError(true);
+        setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [responseData, userPrompt]);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   return isAuthenticated ? (
     <>
@@ -48,8 +75,23 @@ const DashboardLayout = () => {
         <div className="flex flex-col w-full">
           <NavBar />
           <div className="flex-grow mt-10 p-4 overflow-y-auto">
-            {userPrompt && <PromptCard prompt={userPrompt} />}
-            {aiResponse && <ResponseCard response={aiResponse} />}
+            {responseData?.map((data, index) => (
+              <React.Fragment key={index}>
+                <PromptCard prompt={data?.prompt} />
+                <ResponseCard response={data?.response?.generated_text} />
+              </React.Fragment>
+            ))}
+            {userPrompt && userPrompt !== "" && (
+              <PromptCard prompt={userPrompt} />
+            )}
+
+            {isLoading && <h1>loading...</h1>}
+            {isError && <h1>Something went wrong</h1>}
+
+            {/* {aiResponse && userPrompt !== "" && (
+              <ResponseCard response={aiResponse} />
+            )} */}
+            <div ref={messagesEndRef}></div>
           </div>
           <SearchBar onSearch={handleSearch} />
         </div>

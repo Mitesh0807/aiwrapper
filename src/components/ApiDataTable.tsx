@@ -66,7 +66,7 @@ interface RootState {
   };
 }
 
-export default function ApiDataTable3() {
+export default function ApiDataTable() {
   const dispatch: AppDispatch = useDispatch();
 
   const users = useSelector((state: RootState) => state?.api?.allApiData);

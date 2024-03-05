@@ -5,15 +5,25 @@ const SearchBar = ({ onSearch }) => {
   const [searchPropmpt, setSearchPrompt] = useState("");
 
   const handleSearch = () => {
-    console.log(searchPropmpt);
-    onSearch(searchPropmpt);
+    if (searchPropmpt !== "") {
+      onSearch(searchPropmpt);
+      setSearchPrompt("");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
     <div className="flex justify-center mt-3">
       <Input
         size="md"
+        value={searchPropmpt}
         onChange={(e) => setSearchPrompt(e.target.value)}
+        onKeyDown={handleKeyDown}
         endContent={
           <Button onClick={handleSearch} color="primary" variant="flat">
             Search

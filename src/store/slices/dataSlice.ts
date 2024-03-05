@@ -8,7 +8,7 @@ interface ResponseItem {
 
 export const fetchResponse = createAsyncThunk<ResponseItem, string>(
   'fetchResponse',
-  async (payload:string) => {
+  async (payload:string, { rejectWithValue}) => {
     try {
       const response = await api.post("/generate", {
         search: payload,
@@ -16,7 +16,7 @@ export const fetchResponse = createAsyncThunk<ResponseItem, string>(
       return { prompt: payload, response: response.data };
     } catch (error) {
       console.error("Error fetching data:", error);
-      throw error;
+      return rejectWithValue(error);
     }
   }
 );
