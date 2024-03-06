@@ -48,8 +48,8 @@ const DashboardLayout = () => {
         setUserPrompt("");
       })
       .catch((err) => {
-        setIsError(true);
         setIsLoading(false);
+        setIsError(true);
       });
   };
 
@@ -81,12 +81,16 @@ const DashboardLayout = () => {
                 <ResponseCard response={data?.response?.generated_text} />
               </React.Fragment>
             ))}
+
             {userPrompt && userPrompt !== "" && (
               <PromptCard prompt={userPrompt} />
             )}
 
-            {isLoading && <h1>loading...</h1>}
-            {isError && <h1>Something went wrong</h1>}
+            {isLoading && (
+              <ResponseCard isLoading={isLoading} isError={false} />
+            )}
+
+            {isError && <ResponseCard isError={isError} isLoading={false} />}
 
             {/* {aiResponse && userPrompt !== "" && (
               <ResponseCard response={aiResponse} />
