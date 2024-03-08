@@ -15,6 +15,9 @@ export const SidebarItem = ({ icon, title, isActive, href = "" }: Props) => {
       console.log("ok");
     }
   };
+
+  const newTitle = title.length > 12 ? title.substr(0, 12) + "..." : title;
+
   return (
     <Link to={href} className="text-default-900 active:bg-none max-w-full">
       <div
@@ -27,7 +30,7 @@ export const SidebarItem = ({ icon, title, isActive, href = "" }: Props) => {
         onClick={handleClick}
       >
         {icon}
-        <span className="text-default-900">{title}</span>
+        <span className="text-default-900">{newTitle}</span>
       </div>
     </Link>
   );

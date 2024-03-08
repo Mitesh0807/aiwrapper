@@ -37,6 +37,22 @@ export const getUserId = createAsyncThunk<ResponseItem, string>(
   }
 );
 
+export const getChatHistory = createAsyncThunk ('getChatHistory',
+async ()=>{
+  console.log(localStorage.getItem('userId'));
+  
+  try {
+    const resposne = await api.post("/chatHistory/getHistory",
+    {
+       user_id : localStorage.getItem('userId')      
+    }
+    )
+    console.log(resposne);
+  } catch (error) {
+    console.log(error);
+  }
+})
+
 const dataSlice = createSlice({
   name: "data",
   initialState: {

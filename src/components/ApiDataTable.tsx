@@ -424,7 +424,7 @@ export default function ApiDataTable() {
           <Tooltip color="danger" content="Delete Selected Api">
             <Button
               // isDisabled={selectedKeys?.size > 1}
-              isDisabled={true}
+              isDisabled={false}
               variant="light"
               isIconOnly
               onClick={() => {

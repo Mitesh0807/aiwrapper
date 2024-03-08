@@ -3,9 +3,13 @@ import SearchBar from "../components/SearchBar";
 
 // Library Imports
 import { useAuth0 } from "@auth0/auth0-react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchResponse, getUserId } from "../store/slices/dataSlice";
+import {
+  fetchResponse,
+  getChatHistory,
+  getUserId,
+} from "../store/slices/dataSlice";
 import { SidebarWrapper } from "../components/Sidebar";
 import NavBar from "../components/NavBar";
 import PromptCard from "../components/PromptCard";
@@ -14,21 +18,18 @@ import { useEffect, useRef, useState } from "react";
 import React from "react";
 
 const DashboardLayout = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (user !== undefined) {
       dispatch(getUserId(user));
+      dispatch(getChatHistory());
     }
   }, []);
-
-  const responseData = useSelector(
-    (state: RootState) => state?.data?.responseData
-  );
 
   const { isAuthenticated, user } = useAuth0();
 
   const [userPrompt, setUserPrompt] = useState("");
-
-  const [aiResponse, setAiResponse] = useState("");
 
   const [isError, setIsError] = useState(false);
 
@@ -44,8 +45,8 @@ const DashboardLayout = () => {
       .unwrap()
       .then((data) => {
         setIsLoading(false);
-        setAiResponse(data?.response?.generated_text);
         setUserPrompt("");
+        navigate("/dashboard/65e8375877f458805b0fb03e");
       })
       .catch((err) => {
         setIsLoading(false);
@@ -55,7 +56,9 @@ const DashboardLayout = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [responseData, userPrompt]);
+  }, [userPrompt]);
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -66,8 +69,6 @@ const DashboardLayout = () => {
     }
   };
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
   return isAuthenticated ? (
     <>
       <div className="flex h-screen">
@@ -75,12 +76,7 @@ const DashboardLayout = () => {
         <div className="flex flex-col w-full">
           <NavBar />
           <div className="flex-grow mt-10 p-4 overflow-y-auto">
-            {responseData?.map((data, index) => (
-              <React.Fragment key={index}>
-                <PromptCard prompt={data?.prompt} />
-                <ResponseCard response={data?.response?.generated_text} />
-              </React.Fragment>
-            ))}
+            <Outlet />
 
             {userPrompt && userPrompt !== "" && (
               <PromptCard prompt={userPrompt} />
@@ -92,9 +88,6 @@ const DashboardLayout = () => {
 
             {isError && <ResponseCard isError={isError} isLoading={false} />}
 
-            {/* {aiResponse && userPrompt !== "" && (
-              <ResponseCard response={aiResponse} />
-            )} */}
             <div ref={messagesEndRef}></div>
           </div>
           <SearchBar onSearch={handleSearch} />
