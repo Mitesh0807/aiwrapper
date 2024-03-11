@@ -8,18 +8,38 @@ import React, {
 } from "react";
 import PromptCard from "../components/PromptCard";
 import ResponseCard from "../components/ResponseCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import {
+  clearChatHistory,
+  disabledNewChat,
+  getChatHistoryById,
+} from "../store/slices/dataSlice";
 
 const ChatHistory = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(disabledNewChat());
+      dispatch(clearChatHistory());
+    }
+    dispatch(getChatHistoryById(id));
+  }, [id]);
+
   const chatRef = useRef("");
   const responseData = useSelector(
     (state: RootState) => state?.data?.responseData
   );
 
+  const isAnimate = useSelector((state: RootState) => state?.data?.isAnimate);
+  console.log(isAnimate);
+
+  console.log(responseData);
+
   const latestResponse = useMemo(
-    () => responseData[responseData.length - 1]?.response?.response,
+    () => responseData[responseData.length - 1]?.response,
     [responseData]
   );
 
@@ -49,16 +69,31 @@ const ChatHistory = () => {
   };
 
   const [chat, setChat] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
+  //! Pending Scroll To bottom
 
   return (
     <>
       {responseData?.map((data, index) => (
         <React.Fragment key={index}>
           <PromptCard prompt={data?.prompt} />
-          {index === responseData.length - 1 && latestResponse ? (
-            <ResponseCard response={chat} />
+          {index === responseData.length - 1 && latestResponse && isAnimate ? (
+            <>
+              <ResponseCard response={chat} />
+              <div ref={messagesEndRef}></div>
+            </>
           ) : (
-            <ResponseCard response={data?.response?.response} />
+            <ResponseCard response={data?.response} />
           )}
         </React.Fragment>
       ))}
